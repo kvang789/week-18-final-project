@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    username: passengers
+    password: passengers
+    url: jdbc:mysql://localhost:3306/passengers
+logging:
+  level:
+    root: info
+    '[com.promineotech]': debug   
+

@@ -1,0 +1,25 @@
+package com.promineotech.flight.controller;
+
+import javax.validation.Valid;
+
+import org.springframework.web.bind.annotation.RestController;
+
+import com.promineotech.flight.entity.Passenger;
+
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import lombok.extern.slf4j.Slf4j;
+
+
+@RestController
+@Slf4j
+public class PassengerController implements PassengerInterfaceController {
+	
+	
+
+	@Override
+	public Passenger passenger(@Valid @RequestBody Passenger passenger) {
+		log.info("Passenger={}", passenger);
+		return Passenger.builder().build();
+	}
+
+}

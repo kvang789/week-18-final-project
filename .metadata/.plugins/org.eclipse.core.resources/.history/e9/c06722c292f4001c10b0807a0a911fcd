@@ -1,0 +1,9 @@
+package com.promineotech.flight.service;
+
+import com.promineotech.flight.entity.FlightReview;
+
+public interface FlightReviewInterfaceService {
+
+	FlightReview fetchFlightReviews(int flightId);
+
+}

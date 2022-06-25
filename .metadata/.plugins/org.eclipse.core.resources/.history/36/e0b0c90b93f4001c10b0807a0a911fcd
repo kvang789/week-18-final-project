@@ -1,0 +1,23 @@
+package com.promineotech.flight.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.promineotech.flight.entity.FlightReview;
+import com.promineotech.flight.service.FlightReviewInterfaceService;
+
+import lombok.extern.slf4j.Slf4j;
+
+@RestController
+@Slf4j
+public class FlightReviewController implements FlightReviewInterfaceController {
+	
+	@Autowired
+	private FlightReviewInterfaceService flightReviewService;
+	
+	@Override
+	public FlightReview fetchFlightReviews(int flightId) {
+		log.info("The method fetchFlightReviews was called with flightId= {}", flightId);
+		return flightReviewService.fetchFlightReviews(flightId);
+	}
+}

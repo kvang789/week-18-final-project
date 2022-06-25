@@ -1,0 +1,77 @@
+package com.promineotech.flight.controller;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.jdbc.SqlConfig;
+
+import com.promineotech.flight.entity.FlightReview;
+
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@ActiveProfiles("test")
+@Sql(scripts = {
+		"classpath:Passengers_Data.sql", 
+		"classpath:Passengers_Schema.sql"},
+config = @SqlConfig(encoding = "utf-8"))
+class CreateFlightReviewTest {
+
+	@LocalServerPort
+	private int serverPort;
+	
+	@Autowired
+	private TestRestTemplate restTemplate;
+	
+	@Test
+	void testCreateFlightReviewReturnsSuccess201() {
+		// Given: a valid flight as JSON
+		String body = createFlightRatingBody();
+		String uri = String.format("http://localhost:%d/flightReview", serverPort);
+		
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		
+		HttpEntity<String> bodyEntity = new HttpEntity<>(body, headers);
+		
+		// When: the rating is sent
+		ResponseEntity<FlightReview> response = restTemplate.exchange(uri, 
+				HttpMethod.POST, bodyEntity, FlightReview.class);
+		
+		// Then: a 201 status is returned
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+		
+		// And: the flight rating is correct
+		System.out.println(response);
+		assertThat(response.getBody()).isNotNull();
+		
+		
+	}
+
+	private String createFlightRatingBody() {
+		// @formatter:off
+		return "{\n"
+				//+ " \"flightRatingId\":\"1\",\n"
+				+ " \"flightId\":\"1\",\n"
+				+ " \"passengerId\":\"1\",\n"
+				+ " \"publishTime\":\"CURRENT_TIMESTAMP\",\n"
+				+ " \"wasOnTime\":\"1\",\n"
+				+ " \"seatWasClean\":\"0\",\n"
+				+ " \"additionalComments\":\"Food options were limited. I asked for a burger and there was none.\",\n"
+				+ "]\n"
+				+ "}";
+		// @formatter:on
+	}
+
+}
